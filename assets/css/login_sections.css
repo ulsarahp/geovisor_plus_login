@@ -1,0 +1,23 @@
+  /* LOGIN — modal + botón + secciones estratégicas */
+  #login-modal input:focus { box-shadow: 0 0 0 3px rgba(26,92,78,0.15) !important; }
+  .btn-login-toggle { display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.09); border:1px solid rgba(255,255,255,0.13); border-radius:var(--r-sm); color:#fff; font-size:0.85rem; padding:0.38rem 0.55rem; cursor:pointer; min-width:40px; min-height:40px; flex-shrink:0; transition:all var(--t-fast) var(--ease); }
+  .btn-login-toggle:hover { background:rgba(255,255,255,0.16); }
+
+  /* Secciones estratégicas — ocultas por defecto */
+  .tab[data-tab="trenes"], .tab[data-tab="polos"], .tab[data-tab="subsidios"], .tab[data-tab="selvamaya"] { display:none; }
+
+  /* Sub-temas dashboard estratégicos */
+  #dashboard-subtemas { display:none; gap:0.35rem; flex-wrap:wrap; padding:0.4rem 0.6rem; background:var(--bg-glass); border:1px solid var(--border-subtle); border-radius:var(--r-sm); margin-bottom:0.5rem; align-items:center; }
+  #dashboard-subtemas .subtema-label { font-size:0.6rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.4px; }
+  #dashboard-subtemas button { padding:0.25rem 0.7rem; border-radius:var(--r-full); border:1px solid var(--border-subtle); background:var(--bg-glass); color:var(--text-primary); font-size:0.65rem; font-weight:600; cursor:pointer; font-family:Inter,sans-serif; transition:all var(--t-fast) var(--ease); display:inline-flex; align-items:center; gap:0.3rem; }
+  #dashboard-subtemas button:hover { background:var(--bg-glass-hover); }
+  #dashboard-subtemas button.active { background:linear-gradient(135deg,#6B1132,#8a1a3a); color:#fff; border-color:transparent; }
+
+  /* Panels para secciones estratégicas */
+  .seccion-panel-estrategica { display:none; padding:0.6rem 0.7rem; background:var(--bg-glass); border:1px solid var(--border-subtle); border-radius:var(--r-md); margin-top:0.5rem; flex-direction:column; gap:0.5rem; }
+  .seccion-panel-estrategica.visible { display:flex; }
+  .estrategica-placeholder { text-align:center; padding:1.5rem 0.8rem; color:var(--text-muted); font-size:0.72rem; line-height:1.5; }
+  .estrategica-placeholder i { font-size:1.8rem; margin-bottom:0.5rem; display:block; opacity:0.4; }
+  .estrategica-placeholder .estrategica-title { font-family:'Space Grotesk',sans-serif; font-size:0.85rem; font-weight:800; color:var(--text-primary); margin-bottom:0.3rem; }
+  .tab-estrategica { color:#6F4489 !important; }
+  .tab-estrategica.active { background:linear-gradient(135deg,#6F4489,#4a2d66) !important; border-color:#6F4489 !important; }

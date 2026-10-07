@@ -18,11 +18,11 @@
 
 
 
- <title>Geovisor Plus CONANP · Sistema de Información Geográfica</title>
+ <title>Geovisor Plus Login Login CONANP · Sistema de Información Geográfica</title>
 
 
 
- <meta name="description" content="Geovisor Plus CONANP - Sistema de Información Geográfica para Áreas Naturales Protegidas y ADVC de México." />
+ <meta name="description" content="Geovisor Plus Login Login CONANP - Sistema de Información Geográfica para Áreas Naturales Protegidas y ADVC de México." />
 
 
 
@@ -102,7 +102,8 @@
 
 
 
-   <link rel="stylesheet" href="assets/css/plus_sections.css" />
+   <link rel="stylesheet" href="assets/css/login_sections.css" />
+  <link rel="stylesheet" href="assets/css/plus_sections.css" />
   <link rel="stylesheet" href="assets/css/app.css?v=20261004" />
 
 
@@ -139,7 +140,7 @@
 
 
 
-   <div class="header-title-main">Geovisor Plus CONANP</div>
+   <div class="header-title-main">Geovisor Plus Login Login CONANP</div>
 
 
 
@@ -179,7 +180,8 @@
 
 
 
-  <nav class="header-tabs">
+  <button id="btn-login-toggle" class="btn-login-toggle" title="Acceso estratégico" aria-label="Acceso estratégico"><i class="fas fa-lock"></i></button>
+          <nav class="header-tabs">
 
 
 
@@ -194,6 +196,10 @@
   <button class="tab" data-tab="dashboard"><i class="fas fa-chart-line"></i>Dashboard</button>
           <button class="tab tab-incendios" data-tab="incendios"><i class="fas fa-fire"></i> Incendios</button>
           <button class="tab tab-huracanes" data-tab="huracanes"><i class="fas fa-hurricane"></i> Huracanes</button>
+          <button class="tab tab-estrategica" data-tab="trenes" style="display:none;"><i class="fas fa-train"></i> Trenes</button>
+          <button class="tab tab-estrategica" data-tab="polos" style="display:none;"><i class="fas fa-map-pin"></i> Polos</button>
+          <button class="tab tab-estrategica" data-tab="subsidios" style="display:none;"><i class="fas fa-hand-holding-dollar"></i> Subsidios</button>
+          <button class="tab tab-estrategica" data-tab="selvamaya" style="display:none;"><i class="fas fa-tree"></i> Selva Maya</button>
 
 
 
@@ -444,6 +450,57 @@
       <div id="huracanes-info"></div>
     </div>
 
+
+    <!-- TRENES PANEL -->
+    <div class="seccion-panel-estrategica" id="seccion-trenes">
+      <div class="seccion-titulo"><i class="fas fa-train" style="color:#6F4489;"></i> Trenes</div>
+      <div class="estrategica-placeholder">
+        <i class="fas fa-train"></i>
+        <div class="estrategica-title">Módulo Trenes</div>
+        <p>Visualización de corredores ferroviarios y su intersección con ANP.<br>Contenido en construcción.</p>
+      </div>
+    </div>
+
+    <!-- POLOS DEL BIENESTAR PANEL -->
+    <div class="seccion-panel-estrategica" id="seccion-polos">
+      <div class="seccion-titulo"><i class="fas fa-map-pin" style="color:#6F4489;"></i> Polos del Bienestar</div>
+      <div class="estrategica-placeholder">
+        <i class="fas fa-map-pin"></i>
+        <div class="estrategica-title">Polos del Bienestar</div>
+        <p>Ubicación de polos de desarrollo y su relación con áreas naturales protegidas.<br>Contenido en construcción.</p>
+      </div>
+    </div>
+
+    <!-- SUBSIDIOS PANEL -->
+    <div class="seccion-panel-estrategica" id="seccion-subsidios">
+      <div class="seccion-titulo"><i class="fas fa-hand-holding-dollar" style="color:#6F4489;"></i> Programas de Subsidio</div>
+      <div class="estrategica-placeholder">
+        <i class="fas fa-hand-holding-dollar"></i>
+        <div class="estrategica-title">Programas de Subsidio</div>
+        <p>Distribución de subsidios por ANP y región.<br>Contenido en construcción.</p>
+      </div>
+    </div>
+
+    <!-- SELVA MAYA PANEL -->
+    <div class="seccion-panel-estrategica" id="seccion-selvamaya">
+      <div class="seccion-titulo"><i class="fas fa-tree" style="color:#6F4489;"></i> Selva Maya</div>
+      <div class="estrategica-placeholder">
+        <i class="fas fa-tree"></i>
+        <div class="estrategica-title">Selva Maya</div>
+        <p>Monitoreo de la Selva Maya: ANP, deforestación, conectividad.<br>Contenido en construcción.</p>
+      </div>
+    </div>
+
+    <!-- SUBTEMAS DASHBOARD (estratégico) -->
+    <div id="dashboard-subtemas" style="display:none;">
+      <span class="subtema-label"><i class="fas fa-chart-line"></i> Dashboard Estratégico:</span>
+      <button data-subtema="trenes" onclick="switchSubtema('trenes')"><i class="fas fa-train"></i> Trenes</button>
+      <button data-subtema="polos" onclick="switchSubtema('polos')"><i class="fas fa-map-pin"></i> Polos</button>
+      <button data-subtema="subsidios" onclick="switchSubtema('subsidios')"><i class="fas fa-hand-holding-dollar"></i> Subsidios</button>
+      <button data-subtema="selvamaya" onclick="switchSubtema('selvamaya')"><i class="fas fa-tree"></i> Selva Maya</button>
+    </div>
+
+    
     <div id="grafico-anp-conteo" class="grafico-container">
 
 
@@ -1714,7 +1771,7 @@
 
 
 
-    <h1 style="margin:0; font-size:12pt; color:#fff; font-family:'Space Grotesk',sans-serif; font-weight:700; line-height:1.1;">Geovisor Plus CONANP</h1>
+    <h1 style="margin:0; font-size:12pt; color:#fff; font-family:'Space Grotesk',sans-serif; font-weight:700; line-height:1.1;">Geovisor Plus Login Login CONANP</h1>
 
 
 
@@ -1928,7 +1985,7 @@
 
 
 
-   <h2><i class="fas fa-info-circle"></i> Bienvenido al Geovisor Plus CONANP</h2>
+   <h2><i class="fas fa-info-circle"></i> Bienvenido al Geovisor Plus Login Login CONANP</h2>
 
 
 
@@ -2064,11 +2121,11 @@
 
 
 
-      <div class="welcome-badge"><i class="fas fa-sparkles"></i> Nuevo · Geovisor Plus CONANP</div>
+      <div class="welcome-badge"><i class="fas fa-sparkles"></i> Nuevo · Geovisor Plus Login Login CONANP</div>
 
 
 
-      <h1 id="welcome-title"><i class="fas fa-compass"></i> Bienvenido al Geovisor Plus CONANP</h1>
+      <h1 id="welcome-title"><i class="fas fa-compass"></i> Bienvenido al Geovisor Plus Login Login CONANP</h1>
 
 
 
@@ -2280,7 +2337,7 @@
 
 
 
-        <p class="faq-sub">Respuestas rápidas sobre el uso del Geovisor Plus CONANP · Datos oficiales únicamente del grupo <b>CONANP</b></p>
+        <p class="faq-sub">Respuestas rápidas sobre el uso del Geovisor Plus Login Login CONANP · Datos oficiales únicamente del grupo <b>CONANP</b></p>
 
 
 
@@ -2542,6 +2599,7 @@
 
 
 
+  <script src="assets/js/login.js"></script>
   <script src="assets/js/config.js?v=20261004"></script>
 <script src="assets/js/app.js?v=20261004"></script>
 <script src="assets/js/features.js?v=20261004"></script>

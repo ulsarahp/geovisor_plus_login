@@ -1306,10 +1306,19 @@ const mapOriginalContainer=document.getElementById('map-container');
 const mapDashboardContainer=document.getElementById('map-dashboard');
 
 function switchTab(tabId){
+
+  if(typeof SECCIONES_ESTRATEGICAS !== 'undefined' && SECCIONES_ESTRATEGICAS.includes(tabId)){
+    if(typeof window.isLoggedIn === 'function' && !window.isLoggedIn()){
+      if(typeof window.showLoginModal === 'function') window.showLoginModal();
+      return;
+    }
+  }
+
  const gCount=document.getElementById('grafico-anp-conteo');
  const gArea=document.getElementById('grafico-anp-superficie');
  const gAdvc=document.getElementById('grafico-advc');
- gCount.style.display='none';gArea.style.display='none';gAdvc.style.display='none';dashboardContainer.style.display='none';try{var _ip=document.getElementById('seccion-incendios');if(_ip)_ip.classList.remove('visible');var _hp=document.getElementById('seccion-huracanes');if(_hp)_hp.classList.remove('visible');if(tabId!=='incendios'&&typeof limpiarIncendios==='function')limpiarIncendios();if(tabId!=='huracanes'&&typeof limpiarHuracanes==='function')limpiarHuracanes();}catch(e){}
+ gCount.style.display='none';gArea.style.display='none';gAdvc.style.display='none';dashboardContainer.style.display='none';try{var _ip=document.getElementById('seccion-incendios');if(_ip)_ip.classList.remove('visible');var _hp=document.getElementById('seccion-huracanes');if(_hp)_hp.classList.remove('visible');if(tabId!=='incendios'&&typeof limpiarIncendios==='function')limpiarIncendios();if(tabId!=='huracanes'&&typeof limpiarHuracanes==='function')limpiarHuracanes();
+  if(tabId!=='trenes'&&tabId!=='polos'&&tabId!=='subsidios'&&tabId!=='selvamaya'){['seccion-trenes','seccion-polos','seccion-subsidios','seccion-selvamaya'].forEach(function(id){var e=document.getElementById(id);if(e)e.classList.remove('visible');});}}catch(e){}
  const mapEl=document.getElementById('map');
  if(mapEl.parentElement===mapDashboardContainer){mapOriginalContainer.appendChild(mapEl);setTimeout(()=>map.invalidateSize(),100);}
   if(tabId==='general'){if(!gCount.classList.contains('grafico-cerrado'))gCount.style.display='block';if(!gArea.classList.contains('grafico-cerrado'))gArea.style.display='block';gAdvc.classList.add('grafico-oculto');actualizarGraficosAnp();actualizarContador();}
@@ -4994,3 +5003,16 @@ try{ setInterval(updateSystemStatus, 2000); }catch(e){}
 try{ document.addEventListener('DOMContentLoaded', function(){ setTimeout(updateSystemStatus, 600); }); }catch(e){}
 try{ setTimeout(updateSystemStatus, 800); }catch(e){}
 window.updateSystemStatus = updateSystemStatus;
+
+// Dashboard sub-temas estratégicos (solo con login)
+function switchSubtema(subtema) {
+  if (typeof window.isLoggedIn === 'function' && !window.isLoggedIn()) {
+    if (typeof window.showLoginModal === 'function') window.showLoginModal();
+    return;
+  }
+  document.querySelectorAll('#dashboard-subtemas button').forEach(function(b) {
+    b.classList.toggle('active', b.dataset.subtema === subtema);
+  });
+  console.log('[Dashboard] Subtema:', subtema);
+}
+window.switchSubtema = switchSubtema;
