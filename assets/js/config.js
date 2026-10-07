@@ -1,13 +1,29 @@
 // ================================================================
-// CONFIG — única definición de constantes del proyecto Geovisor CONANP
-// Este es el único lugar donde se definen. El resto del código
-// las consume como globales (clásico) o vía import (módulo).
-// El servicio WFS es siempre el institucional de CONANP.
+// CONFIG — única definición de constantes
+// Modo local: carga capas desde assets/data/*.geojson
+// Modo GeoServer: carga desde WFS remoto
+// Para cambiar: usar ?geoserver=... o dejar el fallback local
 // ================================================================
-var GEOSERVER_URL = 'https://geoserver.conanp.gob.mx/geoserver/SIG-DES/wfs?';
+
 function resolveGeoserverBase(){
-  try{ localStorage.removeItem('geovisor-geoserver'); }catch(e){}
-  return GEOSERVER_URL;
+  try{
+    var q = null;
+    try{ q = new URLSearchParams(location.search).get('geoserver'); }catch(e){}
+    if(q){
+      try{ localStorage.setItem('geovisor-geoserver', q); }catch(e){}
+      return q;
+    }
+    try{
+      var saved = localStorage.getItem('geovisor-geoserver');
+      if(saved && saved !== 'local') return saved;
+    }catch(e){}
+  }catch(e){}
+  var h = '';
+  try{ h = location.hostname || ''; }catch(e){}
+  if(h==='localhost' || h==='127.0.0.1' || h===''){
+    return 'http://localhost:8081/geoserver/SIG-DES/wfs?';
+  }
+  return 'https://geoserver.conanp.gob.mx/geoserver/SIG-DES/wfs?';
 }
 
 var GEOSERVER_BASE = resolveGeoserverBase();
@@ -19,6 +35,10 @@ var SHAPE_URLS = {
   'shp_anp': 'https://sig.conanp.gob.mx/container/descargas/files/shape/232-ANP_ITRF08_19162026.zip'
 };
 
+// MODO LOCAL: carga GeoJSON desde assets/data
+// Si el archivo existe localmente, se usa; si no, cae a WFS
+var MODO_LOCAL = true; // true = intentar local primero
+
 try{
   window.GEOSERVER_BASE = GEOSERVER_BASE;
   window.WORKSPACE = WORKSPACE;
@@ -26,8 +46,8 @@ try{
   window.NOMBRES_ESPECIALES = NOMBRES_ESPECIALES;
   window.SHAPE_URLS = SHAPE_URLS;
   window.resolveGeoserverBase = resolveGeoserverBase;
+  window.MODO_LOCAL = MODO_LOCAL;
 }catch(e){}
 
-// NOTA: este archivo se carga como script clásico (compatible file://).
-// main.js lo importa como módulo por efectos laterales y re-exporta
-// los valores desde window.* (ver assets/js/main.js).
+// Exportación para main.js (módulo ES)
+export { GEOSERVER_BASE, WORKSPACE, CAPAS_CONOCIDAS, NOMBRES_ESPECIALES, SHAPE_URLS, resolveGeoserverBase, MODO_LOCAL };

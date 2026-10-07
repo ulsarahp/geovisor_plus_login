@@ -1306,19 +1306,10 @@ const mapOriginalContainer=document.getElementById('map-container');
 const mapDashboardContainer=document.getElementById('map-dashboard');
 
 function switchTab(tabId){
-
-  if(typeof SECCIONES_ESTRATEGICAS !== 'undefined' && SECCIONES_ESTRATEGICAS.includes(tabId)){
-    if(typeof window.isLoggedIn === 'function' && !window.isLoggedIn()){
-      if(typeof window.showLoginModal === 'function') window.showLoginModal();
-      return;
-    }
-  }
-
  const gCount=document.getElementById('grafico-anp-conteo');
  const gArea=document.getElementById('grafico-anp-superficie');
  const gAdvc=document.getElementById('grafico-advc');
- gCount.style.display='none';gArea.style.display='none';gAdvc.style.display='none';dashboardContainer.style.display='none';try{var _ip=document.getElementById('seccion-incendios');if(_ip)_ip.classList.remove('visible');var _hp=document.getElementById('seccion-huracanes');if(_hp)_hp.classList.remove('visible');if(tabId!=='incendios'&&typeof limpiarIncendios==='function')limpiarIncendios();if(tabId!=='huracanes'&&typeof limpiarHuracanes==='function')limpiarHuracanes();
-  if(tabId!=='trenes'&&tabId!=='polos'&&tabId!=='subsidios'&&tabId!=='selvamaya'){['seccion-trenes','seccion-polos','seccion-subsidios','seccion-selvamaya'].forEach(function(id){var e=document.getElementById(id);if(e)e.classList.remove('visible');});}}catch(e){}
+ gCount.style.display='none';gArea.style.display='none';gAdvc.style.display='none';dashboardContainer.style.display='none';try{var _ip=document.getElementById('seccion-incendios');if(_ip)_ip.classList.remove('visible');var _hp=document.getElementById('seccion-huracanes');if(_hp)_hp.classList.remove('visible');if(tabId!=='incendios'&&typeof limpiarIncendios==='function')limpiarIncendios();if(tabId!=='huracanes'&&typeof limpiarHuracanes==='function')limpiarHuracanes();}catch(e){}
  const mapEl=document.getElementById('map');
  if(mapEl.parentElement===mapDashboardContainer){mapOriginalContainer.appendChild(mapEl);setTimeout(()=>map.invalidateSize(),100);}
   if(tabId==='general'){if(!gCount.classList.contains('grafico-cerrado'))gCount.style.display='block';if(!gArea.classList.contains('grafico-cerrado'))gArea.style.display='block';gAdvc.classList.add('grafico-oculto');actualizarGraficosAnp();actualizarContador();}
@@ -2523,8 +2514,58 @@ function crearPopupHTML(feature,colorCapa,nombreCapa,tableName){const props=feat
 // ================================================================
 // WFS
 // ================================================================
-async function getCapasDesdeWFS(){const disp=[];for(const nombre of CAPAS_CONOCIDAS){try{const resp=await fetch(`${GEOSERVER_BASE}service=WFS&version=1.1.0&request=GetFeature&typeName=${WORKSPACE}:${nombre}&outputFormat=application/json&maxFeatures=1`);if(resp.ok){const text=await resp.text();try{const j=JSON.parse(text);if(j.type==='FeatureCollection')disp.push(nombre);}catch(e){const r0=await fetch(`${GEOSERVER_BASE}service=WFS&version=1.1.0&request=GetFeature&typeName=${WORKSPACE}:${nombre}&outputFormat=application/json&maxFeatures=0`);if(r0.ok){const t0=await r0.text();try{const j0=JSON.parse(t0);if(j0.type==='FeatureCollection')disp.push(nombre);}catch(e2){}}}};}catch(e){}}return disp;}
-async function fetchWFSGeoJSON(typeName){try{const resp=await fetch(`${GEOSERVER_BASE}service=WFS&version=1.1.0&request=GetFeature&typeName=${WORKSPACE}:${typeName}&outputFormat=application/json`);if(!resp.ok)return[];const text=await resp.text();let g;try{g=JSON.parse(text);}catch(e){return[];}if(g.type==='FeatureCollection')return g.features.map(f=>({type:'Feature',geometry:f.geometry,properties:{...f.properties}}));return[];}catch(e){return[];}}
+async function getCapasDesdeWFS(){
+  // MODO LOCAL: verificar archivos en assets/data antes de consultar GeoServer
+  if(typeof MODO_LOCAL !== 'undefined' && MODO_LOCAL){
+    const locales = [];
+    for(const nombre of CAPAS_CONOCIDAS){
+      try{
+        const r = await fetch('assets/data/' + nombre + '.geojson', {method:'HEAD'});
+        if(r.ok){ locales.push(nombre); continue; }
+      }catch(e){}
+      try{
+        const url = `${GEOSERVER_BASE}service=WFS&version=1.1.0&request=GetFeature&typeName=${WORKSPACE}:${nombre}&outputFormat=application/json&maxFeatures=1`;
+        const resp = await fetch(url);
+        if(resp.ok){
+          const text = await resp.text();
+          try{
+            const json = JSON.parse(text);
+            if(json.type === 'FeatureCollection') locales.push(nombre);
+          }catch(e){}
+        }
+      }catch(e){}
+    }
+    if(locales.length > 0){
+      console.log('[WFS] ' + locales.length + ' capas disponibles (' + 'local + geoserver)');
+      return locales;
+    }
+  }
+const disp=[];for(const nombre of CAPAS_CONOCIDAS){try{const resp=await fetch(`${GEOSERVER_BASE}service=WFS&version=1.1.0&request=GetFeature&typeName=${WORKSPACE}:${nombre}&outputFormat=application/json&maxFeatures=1`);if(resp.ok){const text=await resp.text();try{const j=JSON.parse(text);if(j.type==='FeatureCollection')disp.push(nombre);}catch(e){const r0=await fetch(`${GEOSERVER_BASE}service=WFS&version=1.1.0&request=GetFeature&typeName=${WORKSPACE}:${nombre}&outputFormat=application/json&maxFeatures=0`);if(r0.ok){const t0=await r0.text();try{const j0=JSON.parse(t0);if(j0.type==='FeatureCollection')disp.push(nombre);}catch(e2){}}}};}catch(e){}}return disp;}
+async function fetchWFSGeoJSON(typeName){
+  // MODO LOCAL: intentar cargar desde assets/data primero
+  if(typeof MODO_LOCAL !== 'undefined' && MODO_LOCAL){
+    try{
+      const r = await fetch('assets/data/' + typeName + '.geojson');
+      if(r.ok){
+        const g = await r.json();
+        if(g.type === 'FeatureCollection' && g.features && g.features.length > 0){
+          console.log('[WFS] ' + typeName + ' local (' + g.features.length + ' features)');
+          return g.features;
+        }
+      }
+    }catch(e){ console.warn('[WFS] ' + typeName + ' no local, probando GeoServer'); }
+  }
+  // MODO GEOSERVER: fallback a WFS remoto
+  try{
+    const resp = await fetch(`${GEOSERVER_BASE}service=WFS&version=1.1.0&request=GetFeature&typeName=${WORKSPACE}:${typeName}&outputFormat=application/json`);
+    if(!resp.ok) return [];
+    const text = await resp.text();
+    let g;
+    try{ g = JSON.parse(text); }catch(e){ return []; }
+    if(g.type === 'FeatureCollection') return g.features.map(f => ({type:'Feature', geometry:f.geometry, properties:f.properties}));
+    return [];
+  }catch(e){ return []; }
+}
 
 function descargarGraficoComo(inst,format,titulo){ return descargarGraficoUnificado(inst,format,titulo); }
 
@@ -5003,16 +5044,3 @@ try{ setInterval(updateSystemStatus, 2000); }catch(e){}
 try{ document.addEventListener('DOMContentLoaded', function(){ setTimeout(updateSystemStatus, 600); }); }catch(e){}
 try{ setTimeout(updateSystemStatus, 800); }catch(e){}
 window.updateSystemStatus = updateSystemStatus;
-
-// Dashboard sub-temas estratégicos (solo con login)
-function switchSubtema(subtema) {
-  if (typeof window.isLoggedIn === 'function' && !window.isLoggedIn()) {
-    if (typeof window.showLoginModal === 'function') window.showLoginModal();
-    return;
-  }
-  document.querySelectorAll('#dashboard-subtemas button').forEach(function(b) {
-    b.classList.toggle('active', b.dataset.subtema === subtema);
-  });
-  console.log('[Dashboard] Subtema:', subtema);
-}
-window.switchSubtema = switchSubtema;
