@@ -4701,7 +4701,6 @@ try{
 }catch(e){}
 
 // Exportación para main.js (módulo ES)
-export { GEOSERVER_BASE, WORKSPACE, CAPAS_CONOCIDAS, NOMBRES_ESPECIALES, SHAPE_URLS, resolveGeoserverBase, MODO_LOCAL };
 
 </script>
 <script>
@@ -13338,6 +13337,11 @@ try{
     try{ console.info('[Geovisor CONANP]', environmentReport()); }catch(e){}
   });
 }catch(e){}
+
+
+window.APP_INFO = APP_INFO;
+window.environmentReport = environmentReport;
+
 </script>
 </body>
 

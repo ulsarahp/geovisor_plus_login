@@ -50,4 +50,3 @@ try{
 }catch(e){}
 
 // Exportación para main.js (módulo ES)
-export { GEOSERVER_BASE, WORKSPACE, CAPAS_CONOCIDAS, NOMBRES_ESPECIALES, SHAPE_URLS, resolveGeoserverBase, MODO_LOCAL };
